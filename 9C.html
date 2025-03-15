@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10ThC Attendance</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        #header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+        }
+        #attendanceForm {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        input[type="date"], input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 50%;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .modal-content h2 {
+            margin: 0 0 10px;
+        }
+        .close {
+            color: red;
+            font-size: 20px;
+            cursor: pointer;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+
+<div id="header">10ThC Attendance</div>
+<div id="attendanceForm">
+    <input type="date" id="attendanceDate">
+    <input type="text" id="period" placeholder="Enter Period">
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Present</th>
+            <th>Permitted</th>
+            <th>Absent</th>
+        </tr>
+    </thead>
+    <tbody id="studentList"></tbody>
+</table>
+<button onclick="saveAttendance()">Save</button>
+
+<!-- Success & Error Modal -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<script>
+    const students = [
+        { id: 1, name: "Bedaso Rago Abiti" },
+        { id: 2, name: "Bekaf Shibliyi Husen" },
+        { id: 3, name: "Biftu Tolcha Mengistu" },
+        { id: 4, name: "Bilal Abdella Abdulkadir" },
+        { id: 5, name: "Chala Asefa Abdena" },
+        { id: 6, name: "Dureti Jemal Jarso" },
+        { id: 7, name: "Ebawak Etefa Mekonnen" },
+        { id: 8, name: "Ebisa Shigida Aliye" },
+        { id: 9, name: "Ebise Berhanu Derese" },
+        { id: 10, name: "Ebise Biruk Diribsa" },
+        { id: 11, name: "Efrem Tolesa Tadese" },
+        { id: 12, name: "Firansibekan Birhanu Hailu" },
+        { id: 13, name: "Fuad Abdi Ashiro" },
+        { id: 14, name: "Habtamu Adugna Tola" },
+        { id: 15, name: "Hambisa Temiru Umeta" },
+        { id: 16, name: "Harbu Seyow Haile" },
+        { id: 17, name: "Hawi Dejene Bayisaa" },
+        { id: 18, name: "Hinari Doni Mideksa" },
+        { id: 19, name: "Isaf Nigusie Dandena" },
+        { id: 20, name: "Kenbon Buzune Tesise" },
+        { id: 21, name: "Mersan Chemada Abdisa" },
+        { id: 22, name: "Meskerem Solomon Tekle" },
+        { id: 23, name: "Mihret Tesfaye Regase" },
+        { id: 24, name: "Moebon Ebisa Gizachew" },
+        { id: 25, name: "Nahom Biniam Tilahun" },
+        { id: 26, name: "Natinael Desalegn" },
+        { id: 27, name: "Obsan Gedamu Angesa" },
+        { id: 28, name: "Obse Balcha Tirfesa" },
+        { id: 29, name: "Rabira Feysa Tamene" },
+        { id: 30, name: "Regane Keni Weyessa" },
+        { id: 31, name: "Sifan Zewdu" },
+        { id: 32, name: "Simale Sida Medra" },
+        { id: 33, name: "Tariku Olana Daba" },
+        { id: 34, name: "Yomiyu Dejene Megersa" }
+    ];
+    
+
+    function loadStudents() {
+    let scannedIDs = JSON.parse(localStorage.getItem("CurrencyScanning")) || [];
+    let studentList = document.getElementById("studentList");
+    studentList.innerHTML = "";
+
+    students.forEach(student => {
+        if (!scannedIDs.includes(student.id)) {
+            let row = `<tr>
+                <td>${student.id}</td>
+                <td>${student.name}</td>
+                <td><input type="radio" name="status_${student.id}" class="present" data-id="${student.id}"></td>
+                <td><input type="radio" name="status_${student.id}" class="permitted" data-id="${student.id}"></td>
+                <td><input type="radio" name="status_${student.id}" class="absent" data-id="${student.id}"></td>
+            </tr>`;
+            studentList.innerHTML += row;
+        }
+    });
+}
+    
+    function saveAttendance() {
+        let date = document.getElementById("attendanceDate").value;
+        let period = document.getElementById("period").value;
+        let scannedIDs = JSON.parse(localStorage.getItem("CurrencyScanning")) || [];
+        let attendanceList = [];
+
+        document.querySelectorAll(".present:checked").forEach(box => {
+            let studentID = parseInt(box.dataset.id);
+            if (!scannedIDs.includes(studentID)) {
+                scannedIDs.push(studentID);
+            }
+        });
+
+        document.querySelectorAll(".permitted:checked, .absent:checked").forEach(box => {
+            let studentID = parseInt(box.dataset.id);
+            let student = students.find(s => s.id === studentID);
+            let status = box.classList.contains("permitted") ? "Permitted" : "Absent";
+            attendanceList.push(`9ThC - ${student.id} - ${student.name} (${status})`);
+        });
+
+        localStorage.setItem("CurrencyScanning", JSON.stringify(scannedIDs));
+        
+        let attendanceData = JSON.parse(localStorage.getItem("AttendanceRecords")) || {};
+        attendanceData[`9ThC - ${date} - ${period}`] = attendanceList;
+        localStorage.setItem("AttendanceRecords", JSON.stringify(attendanceData));
+
+        sendToTelegram(attendanceList, date, period);
+    }
+
+    function sendToTelegram(absentees, date, period) {
+        if (absentees.length === 0) {
+            showModal("Success", "Attendance saved successfully!", "green");
+            setTimeout(() => { window.location.href = "continue.html"; }, 6000);
+            return;
+        }
+        
+        let botToken = "7515841528:AAHMo3w4dojN5o0DqRNisUKXmlKzuO080mk";
+        let chatID = "@hhhnnnhhnnnnnn";
+        let message = `9ThC Attendance Report\nDate: ${date}\nPeriod: ${period}\n\n` + absentees.join("\n");
+        
+        let url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        axios.post(url, { chat_id: chatID, text: message })
+            .then(response => {
+                showModal("Success", "Attendance sent successfully!", "green");
+                setTimeout(() => { window.location.href = "continue.html"; }, 6000);
+            })
+            .catch(error => {
+                showModal("Error", "Failed to send attendance!", "red");
+            });
+    }
+
+    function showModal(title, message, color) {
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalMessage").textContent = message;
+        document.getElementById("modalTitle").style.color = color;
+        document.getElementById("modal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+
+    window.onload = loadStudents;
+</script>
+
+</body>
+</html>   
+    

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+            position: relative;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .container {
+            margin: 20px;
+        }
+        .button {
+            display: block;
+            width: 80%;
+            max-width: 400px;
+            margin: 15px auto;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <button class="back-button" onclick="goBack()">&#8592;</button>
+        REPORTS
+    </div>
+
+    <div class="container">
+        <a href="9Areport.html" class="button">9A Attendance Report</a>
+        <a href="9Breport.html" class="button">9B Attendance Report</a>
+        <a href="9Creport.html" class="button">9C Attendance Report</a>
+        <a href="9Dreport.html" class="button">9D Attendance Report</a>
+        <a href="10Areport.html" class="button">10A Attendance Report</a>
+        <a href="10Breport.html" class="button">10B Attendance Report</a>
+        <a href="10Creport.html" class="button">10C Attendance Report</a>
+        <a href="10Dreport.html" class="button">10D Attendance Report</a>
+        <a href="10Ereport.html" class="button">10E Attendance Report</a>
+        <a href="11report.html" class="button">11 Attendance Report</a>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = "home.html";
+        }
+    </script>
+
+</body>
+</html>

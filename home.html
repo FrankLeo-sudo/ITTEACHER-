@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODA Digital Attendance System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #32CD32, #FFFF00);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        header {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            text-align: center;
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .button-container {
+            margin-top: 100px; /* Ensures buttons are visible below the fixed header */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .btn {
+            background: white;
+            color: #333;
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.3s ease;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        .btn:hover {
+            background: #228B22;
+            color: white;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <header>ODA DIGITAL ATTENDANCE SYSTEM</header>
+
+    <div class="button-container">
+        <button class="btn" onclick="navigateTo('scan.html')">SCAN</button>
+        <button class="btn" onclick="navigateTo('report.html')">REPORT</button>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+
+</body>
+</html>
