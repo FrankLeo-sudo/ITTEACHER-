@@ -102,7 +102,7 @@
 
     function saveDataAndRedirect(url) {
         if (scannedText) {
-            localStorage.setItem("Currency Scanning", scannedText); // Save as decoded number
+            localStorage.setItem("CurrencyScanning", scannedText); // Save as decoded number
             window.location.href = url;
         } else {
             alert("No QR code scanned!");
